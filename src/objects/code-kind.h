@@ -28,7 +28,8 @@ namespace internal {
   V(INTERPRETED_FUNCTION)  \
   V(BASELINE)              \
   V(MAGLEV)                \
-  V(TURBOFAN)
+  V(TURBOFAN)              \
+  V(LLVM)
 
 enum class CodeKind : uint8_t {
 #define DEFINE_CODE_KIND_ENUM(name) name,
@@ -64,9 +65,9 @@ inline constexpr bool CodeKindIsUnoptimizedJSFunction(CodeKind kind) {
 }
 
 inline constexpr bool CodeKindIsOptimizedJSFunction(CodeKind kind) {
-  static_assert(static_cast<int>(CodeKind::MAGLEV) + 1 ==
-                static_cast<int>(CodeKind::TURBOFAN));
-  return base::IsInRange(kind, CodeKind::MAGLEV, CodeKind::TURBOFAN);
+  static_assert(static_cast<int>(CodeKind::MAGLEV) + 2 ==
+                static_cast<int>(CodeKind::LLVM));
+  return base::IsInRange(kind, CodeKind::MAGLEV, CodeKind::LLVM);
 }
 
 inline constexpr bool CodeKindIsJSFunction(CodeKind kind) {

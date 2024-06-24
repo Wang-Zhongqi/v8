@@ -9,6 +9,7 @@
 #include "src/compiler/turboshaft/wasm-turboshaft-compiler.h"
 #include "src/compiler/wasm-compiler.h"
 #include "src/handles/handles-inl.h"
+#include "src/llvm/llvm-wasm.h"
 #include "src/logging/counters-scopes.h"
 #include "src/logging/log.h"
 #include "src/objects/code-inl.h"
@@ -172,6 +173,10 @@ WasmCompilationResult WasmCompilationUnit::ExecuteFunctionCompilation(
       result.for_debugging = for_debugging_;
       break;
     }
+    case ExecutionTier::kLLVM: {
+      result = llvm::wasm::ExecuteLLVMWasmCompilation(env, func_body);
+      break;
+    }
   }
 
   DCHECK(result.succeeded());
@@ -215,9 +220,14 @@ JSToWasmWrapperCompilationUnit::JSToWasmWrapperCompilationUnit(
     : isolate_(isolate),
       is_import_(is_import),
       sig_(sig),
-      canonical_sig_index_(canonical_sig_index),
-      job_(compiler::NewJSToWasmCompilationJob(isolate, sig, module, is_import,
-                                               enabled_features)) {
+      canonical_sig_index_(canonical_sig_index) {
+  if (v8_flags.llvm_wasm) {
+    job_ = llvm::wasm::NewJSToWasmCompilationJob();
+  } else {
+    job_ = compiler::NewJSToWasmCompilationJob(isolate, sig, module, is_import,
+                                               enabled_features);
+  }
+
   OptimizedCompilationInfo* info =
       v8_flags.turboshaft_wasm_wrappers
           ? static_cast<compiler::turboshaft::TurboshaftCompilationJob*>(

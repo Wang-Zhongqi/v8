@@ -91,6 +91,10 @@ declare_args() {
   # Sets -dV8_ENABLE_MAGLEV
   v8_enable_maglev = ""
 
+  # Enable the LLVM compiler.
+  # Sets -dV8_ENABLE_LLVM
+  v8_enable_llvm = ""
+
   # Include support for WebAssembly. If disabled, the 'WebAssembly' global
   # will not be available, and embedder APIs to generate WebAssembly modules
   # will fail. Also, asm.js will not be translated to WebAssembly and will be
@@ -215,6 +219,11 @@ if (v8_enable_turbofan == "") {
 }
 assert(v8_enable_turbofan || !v8_enable_webassembly,
        "Webassembly is not available when Turbofan is disabled.")
+
+# LLVM is enabled by default, except in lite mode.
+if (v8_enable_llvm == "") {
+  v8_enable_llvm = !v8_enable_lite_mode
+}
 
 # Direct internal handles and direct locals are enabled by default if
 # conservative stack scanning is enabled.

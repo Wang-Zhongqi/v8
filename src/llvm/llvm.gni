@@ -1,0 +1,10 @@
+llvm_libs = exec_script("scripts/get_llvm_libs.py",
+                      [ rebase_path("//third_party/llvm_install/bin/llvm-config") ], "list lines")
+
+if (host_cpu == "x64") {
+  llvm_system_libs = exec_script("scripts/get_llvm_system_libs.py",
+                      [ rebase_path("//third_party/llvm_install/bin/llvm-config"), "x86_64" ], "list lines")
+} else if (host_cpu == "arm64") {
+  llvm_system_libs = exec_script("scripts/get_llvm_system_libs.py",
+                      [ rebase_path("//third_party/llvm_install/bin/llvm-config"), "aarch64" ], "list lines")
+}

@@ -582,10 +582,14 @@ RUNTIME_FUNCTION(Runtime_OptimizeMaglevOnNextCall) {
 // TODO(jgruber): Rename to OptimizeTurbofanOnNextCall.
 RUNTIME_FUNCTION(Runtime_OptimizeFunctionOnNextCall) {
   HandleScope scope(isolate);
-  return OptimizeFunctionOnNextCall(
-      args, isolate,
-      v8_flags.optimize_on_next_call_optimizes_to_maglev ? CodeKind::MAGLEV
-                                                         : CodeKind::TURBOFAN);
+  CodeKind kind = CodeKind::TURBOFAN;
+  if (v8_flags.optimize_on_next_call_optimizes_to_maglev) {
+    kind = CodeKind::MAGLEV;
+  }
+  if (v8_flags.optimize_on_next_call_optimizes_to_llvm) {
+    kind = CodeKind::LLVM;
+  }
+  return OptimizeFunctionOnNextCall(args, isolate, kind);
 }
 
 RUNTIME_FUNCTION(Runtime_EnsureFeedbackVectorForFunction) {
@@ -921,6 +925,10 @@ RUNTIME_FUNCTION(Runtime_GetOptimizationStatus) {
     status |= static_cast<int>(
         OptimizationStatus::kOptimizeOnNextCallOptimizesToMaglev);
   }
+  if (v8_flags.optimize_on_next_call_optimizes_to_llvm) {
+    status |= static_cast<int>(
+        OptimizationStatus::kOptimizeOnNextCallOptimizesToLLVM);
+  }
 
   Handle<Object> function_object = args.at(0);
   if (IsUndefined(*function_object)) return Smi::FromInt(status);
@@ -943,7 +951,9 @@ RUNTIME_FUNCTION(Runtime_GetOptimizationStatus) {
     case TieringState::kNone:
     case TieringState::kRequestMaglev_Synchronous:
     case TieringState::kRequestMaglev_Concurrent:
-      // TODO(v8:7700): Maglev support.
+    case TieringState::kRequestLLVM_Synchronous:
+    case TieringState::kRequestLLVM_Concurrent:
+      // TODO(v8:7700): Maglev/LLVM support.
       break;
   }
 

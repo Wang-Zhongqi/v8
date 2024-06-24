@@ -1201,6 +1201,9 @@ config("features") {
   if (v8_enable_turbofan) {
     defines += [ "V8_ENABLE_TURBOFAN" ]
   }
+  if (v8_enable_llvm) {
+    defines += [ "V8_ENABLE_LLVM" ]
+  }
   if (v8_jitless) {
     defines += [ "V8_JITLESS" ]
   }
@@ -3750,6 +3753,7 @@ v8_header_set("v8_internal_headers") {
     "src/json/json-parser.h",
     "src/json/json-stringifier.h",
     "src/libsampler/sampler.h",
+    "src/llvm/llvm-compiler.h",
     "src/logging/code-events.h",
     "src/logging/counters-definitions.h",
     "src/logging/counters-scopes.h",
@@ -5204,10 +5208,10 @@ group("v8_tracing") {
 }
 
 v8_source_set("v8_base_without_compiler") {
-  # Only targets in this file and gcmole can depend on this.
   visibility = [
     ":*",
     "tools/gcmole/:*",
+    "src/llvm:v8_llvm",
   ]
 
   # Split static libraries on windows into two.
@@ -6205,6 +6209,7 @@ group("v8_base") {
   public_deps = [
     ":v8_base_without_compiler",
     ":v8_compiler",
+    "src/llvm:v8_llvm",
   ]
 
   if (v8_enable_turbofan) {
@@ -7172,6 +7177,7 @@ if (current_toolchain == v8_snapshot_toolchain) {
     deps = [
       ":v8_base_without_compiler",
       ":v8_compiler_for_mksnapshot",
+      "//src/llvm:v8_llvm",
       ":v8_init",
       ":v8_libbase",
       ":v8_libplatform",

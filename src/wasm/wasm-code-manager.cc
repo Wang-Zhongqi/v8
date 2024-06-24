@@ -406,10 +406,21 @@ void WasmCode::Disassemble(const char* name, std::ostream& os,
   if (!IsAnonymous()) os << "index: " << index() << "\n";
   os << "kind: " << GetWasmCodeKindAsString(kind()) << "\n";
   if (kind() == kWasmFunction) {
-    DCHECK(is_liftoff() || tier() == ExecutionTier::kTurbofan);
-    const char* compiler =
-        is_liftoff() ? (for_debugging() ? "Liftoff (debug)" : "Liftoff")
-                     : "TurboFan";
+    DCHECK(is_liftoff() || is_turbofan() || is_llvm());
+    const char* compiler = nullptr;
+    switch (tier()) {
+      case ExecutionTier::kLiftoff:
+        compiler = for_debugging() ? "Liftoff (debug)" : "Liftoff";
+        break;
+      case ExecutionTier::kTurbofan:
+        compiler = "TurboFan";
+        break;
+      case ExecutionTier::kLLVM:
+        compiler = "LLVM";
+        break;
+      default:
+        UNREACHABLE();
+    }
     os << "compiler: " << compiler << "\n";
   }
   size_t padding = instructions().size() - unpadded_binary_size_;

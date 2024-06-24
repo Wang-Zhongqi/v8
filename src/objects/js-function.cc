@@ -191,13 +191,16 @@ namespace {
 
 constexpr TieringState TieringStateFor(CodeKind target_kind,
                                        ConcurrencyMode mode) {
-  DCHECK(target_kind == CodeKind::MAGLEV || target_kind == CodeKind::TURBOFAN);
-  return target_kind == CodeKind::MAGLEV
-             ? (IsConcurrent(mode) ? TieringState::kRequestMaglev_Concurrent
-                                   : TieringState::kRequestMaglev_Synchronous)
-             : (IsConcurrent(mode)
-                    ? TieringState::kRequestTurbofan_Concurrent
-                    : TieringState::kRequestTurbofan_Synchronous);
+  DCHECK(target_kind == CodeKind::MAGLEV || target_kind == CodeKind::TURBOFAN || target_kind == CodeKind::LLVM);
+
+  switch (target_kind) {
+    case CodeKind::MAGLEV: return IsConcurrent(mode) ? TieringState::kRequestMaglev_Concurrent : TieringState::kRequestMaglev_Synchronous;
+    case CodeKind::TURBOFAN: return IsConcurrent(mode) ? TieringState::kRequestTurbofan_Concurrent : TieringState::kRequestTurbofan_Synchronous;
+    case CodeKind::LLVM: return IsConcurrent(mode) ? TieringState::kRequestLLVM_Concurrent : TieringState::kRequestLLVM_Synchronous;
+    default: {
+      UNREACHABLE();
+    }
+  }
 }
 
 }  // namespace

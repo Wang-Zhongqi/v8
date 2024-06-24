@@ -61,6 +61,12 @@ static inline bool IsMaglevOsrEnabled() {
 
 }  // namespace maglev
 
+namespace llvm {
+
+static inline bool IsLLVMEnabled() { return v8_flags.llvm_js; }
+
+}
+
 // The V8 compiler API.
 //
 // This is the central hub for dispatching to the various compilers within V8.

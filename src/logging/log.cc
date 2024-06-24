@@ -2483,6 +2483,7 @@ void ExistingCodeLogger::LogCodeObject(Tagged<AbstractCode> object) {
     case CodeKind::TURBOFAN:
     case CodeKind::BASELINE:
     case CodeKind::MAGLEV:
+    case CodeKind::LLVM:
       return;  // We log this later using LogCompiledFunctions.
     case CodeKind::FOR_TESTING:
       description = "STUB code";

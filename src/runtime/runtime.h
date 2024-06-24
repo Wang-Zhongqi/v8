@@ -1028,6 +1028,7 @@ enum class OptimizationStatus {
   kIsLazy = 1 << 18,
   kTopmostFrameIsMaglev = 1 << 19,
   kOptimizeOnNextCallOptimizesToMaglev = 1 << 20,
+  kOptimizeOnNextCallOptimizesToLLVM = 1 << 21,
 };
 
 }  // namespace internal

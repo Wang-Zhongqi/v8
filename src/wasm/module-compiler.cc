@@ -1028,6 +1028,9 @@ ExecutionTierPair GetDefaultTiersPerModule(NativeModule* native_module,
   if (lazy_module) {
     return {ExecutionTier::kNone, ExecutionTier::kNone};
   }
+  if (v8_flags.llvm_wasm) {
+    return {ExecutionTier::kLLVM, ExecutionTier::kLLVM};
+  }
   if (is_asmjs_module(module)) {
     DCHECK(!is_in_debug_state);
     return {ExecutionTier::kTurbofan, ExecutionTier::kTurbofan};
@@ -2314,7 +2317,6 @@ class AsyncCompileJSToWasmWrapperJob final
   void Run(JobDelegate* delegate) override {
     auto engine_scope = engine_barrier_->TryLock();
     if (!engine_scope) return;
-
 
     size_t index;
     if (!GetNextUnitIndex(&index)) return;

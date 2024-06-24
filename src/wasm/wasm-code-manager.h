@@ -212,6 +212,8 @@ class V8_EXPORT_PRIVATE WasmCode final {
 
   bool is_turbofan() const { return tier() == ExecutionTier::kTurbofan; }
 
+  bool is_llvm() const { return tier() == ExecutionTier::kLLVM; }
+
   bool contains(Address pc) const {
     return reinterpret_cast<Address>(instructions_) <= pc &&
            pc < reinterpret_cast<Address>(instructions_ + instructions_size_);

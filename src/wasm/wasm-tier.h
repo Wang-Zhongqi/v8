@@ -20,6 +20,7 @@ enum class ExecutionTier : int8_t {
   kNone,
   kLiftoff,
   kTurbofan,
+  kLLVM,
 };
 
 inline const char* ExecutionTierToString(ExecutionTier tier) {
@@ -30,6 +31,8 @@ inline const char* ExecutionTierToString(ExecutionTier tier) {
       return "liftoff";
     case ExecutionTier::kNone:
       return "none";
+    case ExecutionTier::kLLVM:
+      return "llvm";
   }
 }
 

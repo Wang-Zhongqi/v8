@@ -3137,6 +3137,21 @@ DEFINE_BOOL(incremental_marking_for_gc_in_background, true,
 DEFINE_BOOL(use_libm_trig_functions, true, "use libm trig functions")
 #endif
 
+#ifdef V8_ENABLE_LLVM
+DEFINE_BOOL_READONLY(llvm_js, true, "enable the llvm optimizing compiler")
+DEFINE_BOOL(
+    optimize_on_next_call_optimizes_to_llvm, false,
+    "make OptimizeFunctionOnNextCall optimize to llvm instead of turbofan")
+DEFINE_BOOL(llvm_wasm, false, "enable the LLVM, both the baseline compiler and optimise compiler for WebAssembly")
+#else
+DEFINE_BOOL_READONLY(llvm_js, false, "enable the llvm optimizing compiler")
+DEFINE_BOOL_READONLY(
+    optimize_on_next_call_optimizes_to_llvm, false,
+    "make OptimizeFunctionOnNextCall optimize to llvm instead of turbofan")
+DEFINE_BOOL_READONLY(llvm_wasm, false, "enable the LLVM, both the baseline compiler and optimise compiler for WebAssembly")
+#endif  // V8_ENABLE_LLVM
+DEFINE_STRING(llvm_filter, "*", "optimization filter for the llvm compiler")
+
 #undef FLAG
 
 #ifdef VERIFY_PREDICTABLE

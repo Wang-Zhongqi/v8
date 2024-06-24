@@ -889,6 +889,7 @@ StackFrame::Type StackFrameIterator::ComputeStackFrameType(
     case CodeKind::FOR_TESTING:
     case CodeKind::REGEXP:
     case CodeKind::INTERPRETED_FUNCTION:
+    case CodeKind::LLVM:
       // Fall back to the marker.
       break;
   }

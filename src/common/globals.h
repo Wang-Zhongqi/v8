@@ -2254,7 +2254,9 @@ using FileAndLine = std::pair<const char*, int>;
   V(RequestMaglev_Synchronous, 0b010)   \
   V(RequestMaglev_Concurrent, 0b011)    \
   V(RequestTurbofan_Synchronous, 0b100) \
-  V(RequestTurbofan_Concurrent, 0b101)
+  V(RequestTurbofan_Concurrent, 0b101)  \
+  V(RequestLLVM_Synchronous, 0b110)     \
+  V(RequestLLVM_Concurrent, 0b111)
 
 enum class TieringState : int32_t {
 #define V(Name, Value) k##Name = Value,

@@ -46,6 +46,7 @@
 #include "src/heap/parked-scope-inl.h"
 #include "src/init/bootstrapper.h"
 #include "src/interpreter/interpreter.h"
+#include "src/llvm/llvm-js.h"
 #include "src/logging/counters-scopes.h"
 #include "src/logging/log-inl.h"
 #include "src/logging/runtime-call-stats-scope.h"
@@ -1184,6 +1185,8 @@ bool ShouldOptimize(CodeKind code_kind, Handle<SharedFunctionInfo> shared) {
     case CodeKind::MAGLEV:
       return maglev::IsMaglevEnabled() &&
              shared->PassesFilter(v8_flags.maglev_filter);
+    case CodeKind::LLVM:
+      return llvm::IsLLVMEnabled() && shared->PassesFilter(v8_flags.llvm_filter);
     default:
       UNREACHABLE();
   }
@@ -1387,6 +1390,8 @@ MaybeHandle<Code> GetOrCompileOptimized(
   if (code_kind == CodeKind::TURBOFAN) {
     return CompileTurbofan(isolate, function, shared, mode, osr_offset,
                            result_behavior);
+  } else if (code_kind == CodeKind::LLVM) {
+    return llvm::js::CompileLLVM(isolate, function, osr_offset);
   } else {
     DCHECK_EQ(code_kind, CodeKind::MAGLEV);
     return CompileMaglev(isolate, function, mode, osr_offset, result_behavior);

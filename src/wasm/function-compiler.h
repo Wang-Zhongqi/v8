@@ -177,7 +177,7 @@ inline bool CanUseGenericJsToWasmWrapper(const WasmModule* module,
   // We don't use the generic wrapper for asm.js, because it creates invalid
   // stack traces.
   return !is_asmjs_module(module) && v8_flags.wasm_generic_wrapper &&
-         IsJSCompatibleSignature(sig);
+         IsJSCompatibleSignature(sig) && !v8_flags.llvm_wasm;
 #else
   return false;
 #endif

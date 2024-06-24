@@ -106,6 +106,7 @@ void OptimizedCompilationInfo::ConfigureFlags() {
     case CodeKind::MAGLEV:
     case CodeKind::INTERPRETED_FUNCTION:
     case CodeKind::REGEXP:
+    case CodeKind::LLVM:
       UNREACHABLE();
   }
 }

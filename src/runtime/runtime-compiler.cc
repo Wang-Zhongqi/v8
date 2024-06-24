@@ -120,6 +120,14 @@ RUNTIME_FUNCTION(Runtime_CompileOptimized) {
       target_kind = CodeKind::TURBOFAN;
       mode = ConcurrencyMode::kConcurrent;
       break;
+    case TieringState::kRequestLLVM_Synchronous:
+      target_kind = CodeKind::LLVM;
+      mode = ConcurrencyMode::kSynchronous;
+      break;
+    case TieringState::kRequestLLVM_Concurrent:
+      target_kind = CodeKind::LLVM;
+      mode = ConcurrencyMode::kConcurrent;
+      break;
     case TieringState::kNone:
     case TieringState::kInProgress:
       UNREACHABLE();

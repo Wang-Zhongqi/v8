@@ -1,0 +1,31 @@
+import("//gni/v8.gni")
+import("llvm.gni")
+
+v8_source_set("v8_llvm") {
+  visibility = [ "//:*" ]
+
+  sources = [
+     "llvm-js.cc",
+     "llvm-wasm.cc"
+  ]
+
+  if (v8_enable_llvm) {
+    sources += [
+      "js/js-compiler.cc",
+      "wasm/wasm-compiler.cc",
+      "wasm/wasm-translator.cc",
+    ]
+
+    deps = [ "//:v8_base_without_compiler" ]
+
+    include_dirs = [ "//third_party/llvm_install/include" ]
+
+    libs = llvm_system_libs # LLVM Libs needs std Lib, but it has been disable by V8.
+    foreach (llvm_lib, llvm_libs) {
+      libs += [ "//third_party/llvm_install/lib/" + llvm_lib ]
+      print(llvm_lib)
+    }
+  }
+
+  configs = [ "//:internal_config" ] # configs for c flag
+}
